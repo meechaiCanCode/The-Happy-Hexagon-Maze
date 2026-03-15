@@ -1,1 +1,1 @@
-// File for making sure the grid works
+// Test file for grid implementation
