@@ -11,7 +11,7 @@ HexGrid::HexGrid(std::pair<int, int> size, float deadPerc, std::pair<int, int> s
 
     int numDead = deadPerc * size.first * size.second;
 
-    for (int i = 2; i < numDead; i++) {
+    for (int i = 0; i < numDead; i++) {
         addMine();
     }
 }
@@ -27,7 +27,6 @@ void HexGrid::addMine() {
     while (!placed) {
         int x = randx(rng);
         int y = randy(rng);
-        std::cout << x << " " << y << std::endl;
 
         if (x != this->start.first && y != this->start.second && x != this->end.first && y != this->end.second && grid[y][x]) {
             grid[y][x] = false;

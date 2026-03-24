@@ -10,6 +10,8 @@ public:
     std::pair<int, int> getStart() {return start;}
     std::pair<int, int> getEnd() {return end;}
 
+    bool getCell(int x, int y) {return grid[y][x];}
+
     std::vector<std::vector<bool>> grid;
 private:
     // (x,y) coordinates for each pair
