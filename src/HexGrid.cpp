@@ -4,8 +4,8 @@
 
 HexGrid::HexGrid(std::pair<int, int> size, float deadPerc, std::pair<int, int> start, std::pair<int, int> end) {
     this->size = size;
-    this->start = start;
-    this->end = end;
+    this->start = (start.first < 0 || start.second < 0) ? (std::pair<int,int>{0, 0}) : start;
+    this->end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{0, 0}) : end;
 
     grid.resize(size.second, std::vector<bool>(size.first, true));
 
