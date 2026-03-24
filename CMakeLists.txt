@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 4.1)
+cmake_minimum_required(VERSION 4.0.1)
 project(The_Happy_Hexagon_Maze)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 Include(FetchContent)
 FetchContent_Declare(
@@ -15,12 +15,16 @@ add_executable(The_Happy_Hexagon_Maze
         src/main.cpp
         src/HexGrid.cpp
         src/HexGrid.hpp
+        src/Algorithms/Algorithm.cpp
+        src/Algorithms/Algorithm.hpp
 )
 
 add_executable(Tests
         test/gridTest.cpp
         src/HexGrid.cpp
         src/HexGrid.hpp
+        src/Algorithms/Algorithm.cpp
+        src/Algorithms/Algorithm.hpp
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain)
