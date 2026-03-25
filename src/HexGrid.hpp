@@ -11,6 +11,7 @@ public:
     std::pair<int, int> getEnd() {return end;}
 
     bool getCell(int x, int y) {return grid[y][x];}
+    std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> cell);
 
     std::vector<std::vector<bool>> grid;
 private:
