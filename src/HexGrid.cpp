@@ -74,7 +74,7 @@ bool HexGrid::checkValid() {
         }
 
         for (std::pair<int, int> neighbor : getNeighbors(current)) {
-            if (!visited[neighbor.second][neighbor.first]) {
+            if (!visited[neighbor.second][neighbor.first] && grid[neighbor.second][neighbor.first]) {
                 q.push(neighbor);
                 visited[neighbor.second][neighbor.first] = true;
                 parent[neighbor] = current;
