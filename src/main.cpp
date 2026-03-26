@@ -1,6 +1,7 @@
 #include <iostream>
 #include "HexGrid.hpp"
 #include <ctime>
+#include "Algorithms/Algorithm.hpp"
 
 int main() {
     /* I think the order of the main should be as follows:

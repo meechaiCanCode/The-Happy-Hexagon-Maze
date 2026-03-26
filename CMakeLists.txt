@@ -25,6 +25,8 @@ add_executable(Tests
         src/HexGrid.hpp
         src/Algorithms/Algorithm.cpp
         src/Algorithms/Algorithm.hpp
+        src/Algorithms/Dijkstras.cpp
+        src/Algorithms/Dijkstras.hpp
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain)

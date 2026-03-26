@@ -6,8 +6,17 @@
 #include <optional>
 #include <utility>
 #include <vector>
+#include "../HexGrid.hpp"
 
 using Vec2d = std::pair<int, int>;
+template<>
+struct std::hash<Vec2d>
+{
+    size_t operator()(const Vec2d& p) const noexcept
+    {
+        return hash<int>{}(p.first) ^ hash<int>{}(p.second);
+    }
+};
 
 /**
  * Abstract class defining common features of an algorithm. Each iteration can be executed manually, and a running
@@ -19,11 +28,12 @@ private:
     Vec2d start_;
     Vec2d end_;
     long long executionTime_ = 0;
+    HexGrid* grid_;
 
     virtual void runNextIteration_() = 0;
 
 public:
-    Algorithm(Vec2d start, Vec2d end) : start_(std::move(start)), end_(std::move(end)) {};
+    Algorithm(Vec2d start, Vec2d end, HexGrid* grid) : start_(std::move(start)), end_(std::move(end)), grid_(grid) {};
     virtual ~Algorithm() = default;
 
     /**
