@@ -8,7 +8,7 @@
 
 class Dijkstras : public Algorithm
 {
-    std::set<Vec2d>
+    // std::set<Vec2d>
     void runNextIteration_() override;
 
 public:

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_set>
 #include "HexGrid.hpp"
 #include <ctime>
 #include "Algorithms/Algorithm.hpp"
