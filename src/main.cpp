@@ -10,8 +10,8 @@ int main() {
      4.
      */
     const std::clock_t start_time = clock();
-    std::pair<int, int> size = {4, 4};
-    HexGrid motherload{size, 0.25};
+    std::pair<int, int> size = {4, 3};
+    HexGrid motherload{size, 0.7};
     const std::clock_t end_time = clock();
     std::cout << "Time elapsed: " << end_time - start_time << std::endl;
     for (int i = 0; i < size.second; i++) {
