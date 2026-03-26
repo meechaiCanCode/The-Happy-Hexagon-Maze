@@ -1,18 +1,24 @@
 #include "HexGrid.hpp"
+
+#include <algorithm>
 #include <iostream>
+#include <queue>
 #include <array>
+#include <map>
+#include<algorithm>
 #include <random>
 
 HexGrid::HexGrid(std::pair<int, int> size, float deadPerc, std::pair<int, int> start, std::pair<int, int> end) {
     this->size = size;
     this->start = (start.first < 0 || start.second < 0) ? (std::pair<int,int>{0, 0}) : start;
-    this->end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{0, 0}) : end;
+    this->end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{size.second - 1, size.first - 1}) : end;
 
     grid.resize(size.second, std::vector<bool>(size.first, true));
 
     // deadPerc cannot exceed certain values, depending on size of grid, etc.
     // maybe need to take this into account
     int numDead = deadPerc * size.first * size.second;
+    std::cout << "numDead: " << numDead << std::endl;
 
     // When adding mines, add, check within add, then check if there are any
     for (int i = 0; i < numDead; i++) {
@@ -32,17 +38,51 @@ void HexGrid::addMine() {
         int x = randx(rng);
         int y = randy(rng);
 
+        //std::cout << '(' << x << ", " << y << ")\n";
+
         if (x != this->start.first && y != this->start.second && x != this->end.first && y != this->end.second && grid[y][x]) {
             grid[y][x] = false;
-            //if (checkValid()) placed = true;
-            placed = true;
+            if (checkValid()) placed = true;
+            else grid[y][x] = true;
         }
     }
 }
 
-// implement
+// Literally just a bfs, based on discussion/lecture slides
 bool HexGrid::checkValid() {
-    return true;
+    std::queue<std::pair<int, int>> q;
+    std::vector<std::vector<bool>> visited(size.second, std::vector<bool>(size.first, false));
+    std::map<std::pair<int, int>, std::pair<int, int>> parent;
+
+    q.push(start);
+    visited[start.second][start.first] = true;
+
+    while (!q.empty()) {
+        std::pair<int, int> current = q.front();
+        q.pop();
+
+        if (current == end) {
+            shortestPath.clear();
+            std::pair<int, int> pathNode = end;
+            while (pathNode != start) {
+                shortestPath.push_back(pathNode);
+                pathNode = parent[pathNode];
+            }
+            shortestPath.push_back(start);
+            std::reverse(shortestPath.begin(), shortestPath.end());
+            return true;
+        }
+
+        for (std::pair<int, int> neighbor : getNeighbors(current)) {
+            if (!visited[neighbor.second][neighbor.first]) {
+                q.push(neighbor);
+                visited[neighbor.second][neighbor.first] = true;
+                parent[neighbor] = current;
+            }
+        }
+    }
+
+    return false;
 }
 
 std::vector<std::pair<int, int>> HexGrid::getNeighbors(std::pair<int, int> cell) {

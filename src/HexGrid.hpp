@@ -21,6 +21,7 @@ private:
     std::pair<int, int> size;
     std::pair<int, int> start;
     std::pair<int, int> end;
+    std::vector<std::pair<int, int>> shortestPath;
 
     void addMine();
     bool checkValid();
