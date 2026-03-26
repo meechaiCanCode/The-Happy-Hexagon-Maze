@@ -38,9 +38,9 @@ void HexGrid::addMine() {
         int x = randx(rng);
         int y = randy(rng);
 
-        //std::cout << '(' << x << ", " << y << ")\n";
+        std::cout << '(' << x << ", " << y << ")\n";
 
-        if (x != this->start.first && y != this->start.second && x != this->end.first && y != this->end.second && grid[y][x]) {
+        if ((x != this->start.first || y != this->start.second) && (x != this->end.first || y != this->end.second && grid[y][x])) {
             grid[y][x] = false;
             if (checkValid()) placed = true;
             else grid[y][x] = true;

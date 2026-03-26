@@ -10,14 +10,15 @@ int main() {
      4.
      */
     const std::clock_t start_time = clock();
-    HexGrid motherload{{2, 2}, 0};
+    std::pair<int, int> size = {4, 4};
+    HexGrid motherload{size, 0.25};
     const std::clock_t end_time = clock();
     std::cout << "Time elapsed: " << end_time - start_time << std::endl;
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 2; j++) {
+    for (int i = 0; i < size.second; i++) {
+        for (int j = 0; j < size.first; j++) {
             if (i % 2 == 1 && j == 0) std::cout << ' ';
             if (j == 0 && i == 0) std::cout << 's';
-            else if (j == 1 && i == 1) std::cout << 'e';
+            else if (j == size.first - 1 && i == size.second - 1) std::cout << 'e';
             else std::cout << motherload.grid[i][j];
             std::cout << " ";
         }
