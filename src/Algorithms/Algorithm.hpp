@@ -25,12 +25,19 @@ struct std::hash<Vec2d>
 class Algorithm
 {
 private:
+    long long executionTime_ = 0;
+protected:
     Vec2d start_;
     Vec2d end_;
-    long long executionTime_ = 0;
+
     HexGrid* grid_;
 
+    std::optional<std::vector<Vec2d>> foundPath_ = std::nullopt;
+
+    std::vector<Vec2d> getAccessibleNeighbors(Vec2d cellPos);
+
     virtual void runNextIteration_() = 0;
+
 
 public:
     Algorithm(Vec2d start, Vec2d end, HexGrid* grid) : start_(std::move(start)), end_(std::move(end)), grid_(grid) {};
@@ -43,7 +50,7 @@ public:
     void nextIteration();
 
     /**
-     * Calls nextIteration() repeatedly until a path is found or all nodes are traversed
+     * Calls nextIteration() repeatedly until a path is found or all nodes are traversed, returning the resulting path.
      * @return The path found from the traversal. If the algorithm has traversed every possible node but not found
      * the exit point, the vector will be empty.
      */
@@ -56,12 +63,6 @@ public:
     [[nodiscard]] long long getExecutionTime() const { return executionTime_; };
 
     /**
-     * Gets all nodes previously traversed by the algorithm
-     * @return a vector containing coordinate pairs for each traversed node
-     */
-    [[nodiscard]] virtual std::vector<Vec2d> getSearchedNodes() const = 0;
-
-    /**
      * Gets the path found by the algorithm
      * @return A vector containing coordinate pairs for all the nodes in the found path.
      * - If the path has not yet been
@@ -69,6 +70,12 @@ public:
      * - If the algorithm has traversed every possible node but not found
      * the exit point, the vector will be empty.
      */
-    [[nodiscard]] virtual std::optional<std::vector<Vec2d>> getFoundPath() const = 0;
+    [[nodiscard]] const std::optional<std::vector<Vec2d>>& getFoundPath() const { return foundPath_; };
+
+    /**
+     * Gets all nodes previously traversed by the algorithm
+     * @return a vector containing coordinate pairs for each traversed node
+     */
+    [[nodiscard]] virtual std::vector<Vec2d> getSearchedNodes() const = 0;
 
 };

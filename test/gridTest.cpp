@@ -1,7 +1,10 @@
 #include <iostream>
 #include <catch2/catch_test_macros.hpp>
-#include "../src/HexGrid.hpp"
 #include <vector>
+
+#include "../src/HexGrid.hpp"
+#include "../src/Algorithms/Algorithm.hpp"
+#include "../src/Algorithms/Dijkstras.hpp"
 
 TEST_CASE("Init Just Size", "[hexgrid]") {
 	HexGrid test({10, 10});
@@ -121,4 +124,17 @@ TEST_CASE("Middle, Even Coord", "[neighbors]") {
 		REQUIRE(coords[i] == neighbors[i]);
 	}
 	REQUIRE(neighbors.size() == 6);
+}
+
+TEST_CASE("Finds path", "[Algorithms]")
+{
+	Vec2d size{10, 10};
+	HexGrid testGrid(size, 0);
+	std::vector<std::unique_ptr<Algorithm>> algorithms;
+	algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, 0}, &testGrid));
+	for (std::unique_ptr<Algorithm>& algo : algorithms)
+	{
+		auto john = algo->runAlgorithm();
+
+	}
 }

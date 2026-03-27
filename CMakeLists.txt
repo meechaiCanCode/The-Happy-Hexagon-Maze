@@ -17,6 +17,10 @@ add_executable(The_Happy_Hexagon_Maze
         src/HexGrid.hpp
         src/Algorithms/Algorithm.cpp
         src/Algorithms/Algorithm.hpp
+        src/Algorithms/Dijkstras.cpp
+        src/Algorithms/Dijkstras.hpp
+        src/Algorithms/AStar.cpp
+        src/Algorithms/AStar.hpp
 )
 
 add_executable(Tests
@@ -27,6 +31,8 @@ add_executable(Tests
         src/Algorithms/Algorithm.hpp
         src/Algorithms/Dijkstras.cpp
         src/Algorithms/Dijkstras.hpp
+        src/Algorithms/AStar.cpp
+        src/Algorithms/AStar.hpp
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain)

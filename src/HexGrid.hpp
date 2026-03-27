@@ -10,7 +10,7 @@ public:
     std::pair<int, int> getStart() {return start;}
     std::pair<int, int> getEnd() {return end;}
 
-    bool getCell(int x, int y) {return grid[y][x];}
+    bool getCell(std::pair<int, int> cell) {return grid.at(cell.second).at(cell.first);}
     std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> cell);
 
     std::vector<std::vector<bool>> grid;
