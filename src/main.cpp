@@ -15,9 +15,9 @@ int main() {
      3. Send info to gridTest.hpp for init
      4.
      */
-    std::pair<int, int> size = {6,4};
+    std::pair<int, int> size = {40,25};
     const std::clock_t start_time = clock();
-    HexGrid bigOh{size, 0.5};
+    HexGrid bigOh{size};
     const std::clock_t end_time = clock();
     for (int i = 0; i < size.second; i++) {
         std::cout << "\n";
@@ -27,7 +27,10 @@ int main() {
         }
     }
 
+    std::cout << "\n" << end_time - start_time;
+
     // Vec2d size{10, 10};
+    /*
     HexGrid testGrid(size, 0);
     std::vector<std::unique_ptr<Algorithm>> algorithms;
     algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
@@ -38,6 +41,6 @@ int main() {
     {
         foundPaths.emplace_back(algo->runAlgorithm());
 
-    }
+    }*/
 
 }

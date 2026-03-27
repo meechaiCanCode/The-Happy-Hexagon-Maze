@@ -16,35 +16,12 @@ TEST_CASE("Init Just Size", "[hexgrid]") {
 			else num0s++;
 		}
 	}
-	REQUIRE(num0s == 35);
-	REQUIRE(num1s == 65);
-	REQUIRE(test.getStart() == std::pair<int, int>{0,0});
-}
-
-TEST_CASE("Init Size &, %", "[hexgrid]") {
-	HexGrid test({10, 10}, 0.25);
-	int num1s = 0;
-	int num0s = 0;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			if ((test.grid)[i][j] == 1) num1s++;
-			else num0s++;
-		}
-	}
-	REQUIRE(num0s == 25);
-	REQUIRE(num1s == 75);
+	REQUIRE(test.getStart() == std::pair<int, int>{0,9});
+	REQUIRE(test.getEnd() == std::pair<int, int>{9,0});
 }
 
 TEST_CASE("Init All", "[hexgrid]") {
-	HexGrid test({10, 10}, 0.25, {1, 1}, {2, 1});
-	int num1s = 0;
-	int num0s = 0;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			if ((test.grid)[i][j] == 1) num1s++;
-			else num0s++;
-		}
-	}
+	HexGrid test({10, 10}, {1, 1}, {2, 1});
 	REQUIRE(test.getStart() == std::pair<int, int>{1,1});
 	REQUIRE(test.getEnd() == std::pair<int, int>{2,1});
 }
@@ -107,7 +84,7 @@ TEST_CASE("Bottom Right, Even Height", "[neighbors]") {
 }
 
 TEST_CASE("Middle, Odd Coord", "[neighbors]") {
-	HexGrid test({10, 10});
+	HexGrid test({100, 100});
 	std::vector<std::pair<int, int>> neighbors = test.getNeighbors({5, 5});
 	std::vector<std::pair<int, int>> coords = {{5,4}, {6,4}, {4,5}, {6,5}, {5,6}, {6,6}};
 	for (int i = 0; i < coords.size(); i++) {
@@ -129,7 +106,7 @@ TEST_CASE("Middle, Even Coord", "[neighbors]") {
 TEST_CASE("Finds path", "[Algorithms]")
 {
 	Vec2d size{10, 10};
-	HexGrid testGrid(size, 0);
+	HexGrid testGrid(size);
 	std::vector<std::unique_ptr<Algorithm>> algorithms;
 	algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, 0}, &testGrid));
 	for (std::unique_ptr<Algorithm>& algo : algorithms)

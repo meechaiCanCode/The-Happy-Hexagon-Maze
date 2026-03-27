@@ -1,77 +1,53 @@
 #include "HexGrid.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <queue>
 #include <array>
-#include <map>
-#include<algorithm>
+#include <iostream>
+#include <ostream>
 #include <random>
+#include <utility>
 
-HexGrid::HexGrid(std::pair<int, int> size, float deadPerc, std::pair<int, int> start, std::pair<int, int> end) {
-    this->size = size;
-    this->start = (start.first < 0 || start.second < 0) ? (std::pair<int,int>{0, 0}) : start;
-    this->end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{size.first - 1, size.second - 1}) : end;
+HexGrid::HexGrid(std::pair<int, int> big, std::pair<int, int> s, std::pair<int, int> e) : size(std::move(big)), start(std::move(s)), end(std::move(e)) {
+    start = (start.first < 0 || start.second < 0) ? (std::pair<int,int>{0, size.second - 1}) : start;
+    end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{size.first - 1, 0}) : end;
 
-    grid.resize(size.second, std::vector<bool>(size.first, true));
+    grid.resize(size.second, std::vector<bool>(size.first));
+    grid[start.second][start.first] = true;
+    grid[end.second][end.first] = true;
 
-    int numCells = size.first * size.second;
-    int numDead = numCells - shortestPath.size() > numCells * deadPerc ? numCells * deadPerc : numCells - shortestPath.size();
+    const int numCells = size.first * size.second;
+
     int placed = 0;
-    checkValid();
-
-    std::vector<int> grid1D = {};
-    for (int i = 0; i < numCells; i++) {
-        grid1D.emplace_back(i);
-    }
 
     std::random_device dev;
     std::mt19937 rng(dev());
 
-    while (placed < numDead && placed + shortestPath.size() < numCells) {
-        //if (placed % 1000 == 0) std::cout << placed << std::endl;
-        std::cout << placed << ":" << numDead << ":" << shortestPath.size() << std::endl;
-        std::uniform_int_distribution<std::mt19937::result_type> randCoord(1, numCells - 2);
+    std::vector<int> grid1D = {};
+    for (int i = 1; i < numCells - 1; i++) {
+        grid1D.emplace_back(i);
+    }
+    while (!checkValid()) {
+        std::uniform_int_distribution<std::mt19937::result_type> randCoord(1, numCells - 2 - placed);
         int index = randCoord(rng);
         int coord = grid1D[index];
+
         int x = coord % size.first;
         int y = coord / size.first;
-        //std::cout << index << std::endl;
+        grid[y][x] = true;
 
+        placed++;
 
-        grid[y][x] = false;
-        if (!coordInShortestPath(std::pair<int,int>{x,y}) || checkValid()) {
-            placed++;
-            /*std::cout << index << std::endl;
-            for (auto co : grid1D) {
-                std::cout << co << ":" << "(" << x << "," << y << ")" << std::endl;
-            }*/
-            /*std::swap(grid1D[index], grid1D.back());
-            grid1D.pop_back();*/
-            grid1D.erase(std::next(grid1D.begin(), index));
-            std::cout << index << "\n coord:";
-            for (auto co : grid1D) {
-                std::cout << co << " ";
-            }
-            std::cout << "\n i:    ";
-            for (int g = 0; g < grid1D.size(); g++) {
-                std::cout << g << " ";
-            }
-            std::cout << std::endl;
-        }
-        else {
-            grid[y][x] = true;
-        }
+        std::swap(grid1D[index], grid1D.back());
+        grid1D.pop_back();
+
     }
 }
 
 // Literally just a bfs, based on discussion/lecture slides
 bool HexGrid::checkValid() {
-    //std::cout << "Running CheckValid" << std::endl;
     std::queue<std::pair<int, int>> q;
     std::vector<std::vector<bool>> visited(size.second, std::vector<bool>(size.first, false));
-    std::map<std::pair<int, int>, std::pair<int, int>> parent;
-
     q.push(start);
     visited[start.second][start.first] = true;
 
@@ -79,41 +55,19 @@ bool HexGrid::checkValid() {
         std::pair<int, int> current = q.front();
         q.pop();
 
-        if (current == end) {
-            shortestPath.clear();
-            std::pair<int, int> pathNode = end;
-            while (pathNode != start) {
-                shortestPath.push_back(pathNode);
-                pathNode = parent[pathNode];
-            }
-            shortestPath.push_back(start);
-            std::reverse(shortestPath.begin(), shortestPath.end());
-            return true;
-        }
+        if (current == end) return true;
 
         for (std::pair<int, int> neighbor : getNeighbors(current)) {
             if (!visited[neighbor.second][neighbor.first] && grid[neighbor.second][neighbor.first]) {
                 q.push(neighbor);
                 visited[neighbor.second][neighbor.first] = true;
-                parent[neighbor] = current;
             }
         }
     }
-
     return false;
 }
 
-bool HexGrid::coordInShortestPath(std::pair<int, int> coord) {
-    for (auto pathCell : shortestPath) {
-        if (pathCell == coord) {
-            return true;
-        }
-    }
-    return false;
-
-}
-
-std::vector<std::pair<int, int>> HexGrid::getNeighbors(std::pair<int, int> cell) {
+std::vector<std::pair<int, int>> HexGrid::getNeighbors(const std::pair<int, int> &cell) const {
     // Assuming Grid Layout s.t. (0,0) has no bottom left, horizontally jagged. Shown in Zhu's GUI.
     // Neighbor offsets are dependent on if the row is even or odd
     const std::array<std::pair<int,int>, 6> NEIGHBOR_OFFSETS = cell.second % 2 == 0
