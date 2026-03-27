@@ -24,4 +24,5 @@ private:
     std::vector<std::pair<int, int>> shortestPath;
 
     bool checkValid();
+    bool coordInShortestPath(std::pair<int, int> coord);
 };
