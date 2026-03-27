@@ -1,7 +1,3 @@
-//
-// Created by bigna on 3/24/2026.
-//
-
 #pragma once
 #include <queue>
 #include <unordered_map>
