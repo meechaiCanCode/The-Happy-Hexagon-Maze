@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Algorithms/Algorithm.hpp"
+#include "Algorithms/AStar.hpp"
 #include "Algorithms/Dijkstras.hpp"
 
 int main() {
@@ -35,7 +36,7 @@ int main() {
     // Vec2d size{10, 10};
     HexGrid testGrid(size, 0);
     std::vector<std::unique_ptr<Algorithm>> algorithms;
-    algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
+    algorithms.emplace_back(std::make_unique<AStar>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
     for (std::unique_ptr<Algorithm>& algo : algorithms)
     {
         auto john = algo->runAlgorithm();
