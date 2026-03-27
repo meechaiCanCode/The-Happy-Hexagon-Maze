@@ -25,7 +25,7 @@ void Algorithm::nextIteration()
 
     auto startTime = system_clock::now();
     runNextIteration_();
-    executionTime_ += duration_cast<milliseconds>(startTime - system_clock::now()).count();
+    executionTime_ += duration_cast<milliseconds>(system_clock::now() - startTime).count();
 }
 
 std::vector<Vec2d> Algorithm::runAlgorithm()
@@ -39,6 +39,6 @@ std::vector<Vec2d> Algorithm::runAlgorithm()
         foundPath = getFoundPath();
     }
 
-    executionTime_ += duration_cast<milliseconds>(startTime - system_clock::now()).count();
+    executionTime_ += duration_cast<milliseconds>(system_clock::now() - startTime).count();
     return foundPath.value();
 }

@@ -16,7 +16,7 @@ int main() {
      4.
      */
     const std::clock_t start_time = clock();
-    std::pair<int, int> size = {4, 3};
+    std::pair<int, int> size = {3, 2};
     HexGrid motherload{size, 0};
     const std::clock_t end_time = clock();
     std::cout << "Time elapsed: " << end_time - start_time << std::endl;
@@ -36,10 +36,13 @@ int main() {
     // Vec2d size{10, 10};
     HexGrid testGrid(size, 0);
     std::vector<std::unique_ptr<Algorithm>> algorithms;
+    algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
     algorithms.emplace_back(std::make_unique<AStar>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
+
+    std::vector<std::vector<Vec2d>> foundPaths;
     for (std::unique_ptr<Algorithm>& algo : algorithms)
     {
-        auto john = algo->runAlgorithm();
+        foundPaths.emplace_back(algo->runAlgorithm());
 
     }
 

@@ -34,7 +34,7 @@ void AStar::runNextIteration_()
             candidateCells_.emplace(
                 neighbor,
                 currentCell.pos,
-                currentCell.getWeight() + 1,
+                currentCell.distFromStart + 1,
                 getDistance(currentCell.pos, end_)
             );
     }
