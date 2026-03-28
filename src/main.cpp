@@ -96,6 +96,7 @@ int main() {
 
     int traversedCount = 0, candidateCount = 0, pathLength = 0, executionTime = 0;
     int traversedCount2 = 0, pathLength2 = 0;
+    int totalAStarFrames = 0;
 
     View gridView = window.getDefaultView();
     gridView.setViewport(FloatRect({0.f, 0.f}, {1.f, 0.80f}));
@@ -175,6 +176,7 @@ int main() {
                         frames.clear();
                         currentFrame = 0;
                         isPlaying = false;
+                        totalAStarFrames = 0;
                         algo1ExecutionTime = 0; algo2ExecutionTime = 0;
                         algo1PathLength = 0;    algo2PathLength = 0;
                         algo1Traversed = 0;     algo2Traversed = 0;
@@ -197,14 +199,27 @@ int main() {
                                 for (auto& node : algo.getSearchedNodes())
                                     frame[node.second * cols + node.first] = algoIndex == 0 ? TRAVERSED : TRAVERSED2;
 
-                                if (algo.getFoundPath().has_value())
-                                    for (auto& node : algo.getFoundPath().value())
-                                        frame[node.second * cols + node.first] = algoIndex == 0 ? PATH : PATH2;
-
                                 frame[0] = START;
                                 frame[rows * cols - 1] = END;
                                 frames.push_back(frame);
                             }
+
+                            for (int i = 0; i < 30; i++) {
+                                vector<CellState> pathFrame(rows * cols, UNSEEN);
+
+                                for (int r = 0; r < rows; r++)
+                                    for (int c = 0; c < cols; c++)
+                                        if (!grid.getCell({c, r}))
+                                            pathFrame[r * cols + c] = WALL;
+
+                                for (auto& node : algo.getFoundPath().value())
+                                    pathFrame[node.second * cols + node.first] = algoIndex == 0 ? PATH : PATH2;
+
+                                pathFrame[0] = START;
+                                pathFrame[rows * cols - 1] = END;
+                                frames.push_back(pathFrame);
+                            }
+
                             if (algoIndex == 0) {
                                 algo1ExecutionTime = algo.getExecutionTime();
                                 algo1Traversed = algo.getSearchedNodes().size();
@@ -226,6 +241,7 @@ int main() {
                         } else {
                             AStar algoA(startPos, endPos, &grid);
                             buildFrames(algoA, 0);
+                            totalAStarFrames = frames.size();
                             Dijkstras algoD(startPos, endPos, &grid);
                             buildFrames(algoD, 1);
                         }
@@ -475,6 +491,8 @@ int main() {
             window.draw(zoomLabel);
 
             if (selectedAlgo == 0) {
+                bool aStarRunning = currentFrame < totalAStarFrames;
+
                 statsPanel.setPosition({560.f, 605.f});
                 window.draw(statsPanel);
 
@@ -483,12 +501,12 @@ int main() {
                 statsTitle.setFillColor(Color(147, 197, 253));
                 window.draw(statsTitle);
 
-                Text s1(font, "Traversed: " + to_string(traversedCount), 12);
+                Text s1(font, "Traversed: " + to_string(aStarRunning ? traversedCount : algo1Traversed), 12);
                 s1.setPosition({570.f, 630.f});
                 s1.setFillColor(Color(200, 200, 200));
                 window.draw(s1);
 
-                Text s2(font, "Path length: " + to_string(pathLength), 12);
+                Text s2(font, "Path length: " + to_string(aStarRunning ? pathLength : algo1PathLength), 12);
                 s2.setPosition({570.f, 647.f});
                 s2.setFillColor(Color(200, 200, 200));
                 window.draw(s2);
@@ -506,12 +524,12 @@ int main() {
                 statsTitle2.setFillColor(Color(200, 0, 255));
                 window.draw(statsTitle2);
 
-                Text d1(font, "Traversed: " + to_string(traversedCount2), 12);
+                Text d1(font, "Traversed: " + to_string(aStarRunning ? 0 : algo2Traversed), 12);
                 d1.setPosition({770.f, 630.f});
                 d1.setFillColor(Color(200, 200, 200));
                 window.draw(d1);
 
-                Text d2(font, "Path length: " + to_string(pathLength2), 12);
+                Text d2(font, "Path length: " + to_string(aStarRunning ? 0 : pathLength2), 12);
                 d2.setPosition({770.f, 647.f});
                 d2.setFillColor(Color(200, 200, 200));
                 window.draw(d2);
