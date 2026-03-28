@@ -10,6 +10,13 @@ FetchContent_Declare(
         GIT_TAG        v3.5.2 # seems to work with CLion - if you run into problems, try an older version of catch2 v3
 )
 FetchContent_MakeAvailable(Catch2)
+FetchContent_Declare(SFML
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 3.0.2
+        GIT_SHALLOW ON
+        EXCLUDE_FROM_ALL
+        SYSTEM)
+FetchContent_MakeAvailable(SFML)
 
 add_executable(The_Happy_Hexagon_Maze
         src/main.cpp
@@ -36,4 +43,5 @@ add_executable(Tests
 )
 
 target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(The_Happy_Hexagon_Maze PRIVATE SFML::Graphics)
 target_compile_definitions(Tests PRIVATE _GLIBCXX_DEBUG)
