@@ -6,7 +6,7 @@ class HexGrid {
 public:
     explicit HexGrid(std::pair<int, int> size, std::pair<int, int> start = {-1, -1}, std::pair<int, int> end = {-1, -1});
 
-    std::pair<int, int> getSize() {return size;}
+    std::pair<int, int> getSize() {return dims;}
     std::pair<int, int> getStart() {return start;}
     std::pair<int, int> getEnd() {return end;}
 
@@ -18,7 +18,7 @@ private:
     // (x,y) coordinates for each pair
     // cell being false denotes being inaccessible, true means accessible
     // std::vector<std::vector<bool>> grid;
-    std::pair<int, int> size;
+    std::pair<int, int> dims;
     std::pair<int, int> start;
     std::pair<int, int> end;
 

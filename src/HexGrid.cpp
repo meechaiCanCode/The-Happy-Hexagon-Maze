@@ -8,15 +8,15 @@
 #include <random>
 #include <utility>
 
-HexGrid::HexGrid(std::pair<int, int> big, std::pair<int, int> s, std::pair<int, int> e) : size(std::move(big)), start(std::move(s)), end(std::move(e)) {
-    start = (start.first < 0 || start.second < 0) ? (std::pair<int,int>{0, size.second - 1}) : start;
-    end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{size.first - 1, 0}) : end;
+HexGrid::HexGrid(std::pair<int, int> d, std::pair<int, int> s, std::pair<int, int> e) : dims(std::move(d)), start(std::move(s)), end(std::move(e)) {
+    start = (start.first < 0 || start.second < 0) ? (std::pair<int,int>{0, dims.second - 1}) : start;
+    end = (end.first < 0 || end.second < 0) ? (std::pair<int,int>{dims.first - 1, 0}) : end;
 
-    grid.resize(size.second, std::vector<bool>(size.first));
+    grid.resize(dims.second, std::vector<bool>(dims.first));
     grid[start.second][start.first] = true;
     grid[end.second][end.first] = true;
 
-    const int numCells = size.first * size.second;
+    const int numCells = dims.first * dims.second;
 
     int placed = 0;
 
@@ -24,16 +24,30 @@ HexGrid::HexGrid(std::pair<int, int> big, std::pair<int, int> s, std::pair<int, 
     std::mt19937 rng(dev());
 
     std::vector<int> grid1D = {};
-    for (int i = 1; i < numCells - 1; i++) {
+    for (int i = 0; i < numCells; i++) {
         grid1D.emplace_back(i);
     }
-    while (!checkValid()) {
-        std::uniform_int_distribution<std::mt19937::result_type> randCoord(1, numCells - 2 - placed);
-        int index = randCoord(rng);
-        int coord = grid1D[index];
 
-        int x = coord % size.first;
-        int y = coord / size.first;
+    if (end.second * dims.first + end.first > start.second * dims.first + start.first) {
+        std::swap(grid1D[end.second * dims.first + end.first], grid1D.back());
+        grid1D.pop_back();
+        std::swap(grid1D[start.second * dims.first + start.first], grid1D.back());
+    }
+    else {
+        std::swap(grid1D[start.second * dims.first + start.first], grid1D.back());
+        grid1D.pop_back();
+        std::swap(grid1D[end.second * dims.first + end.first], grid1D.back());
+    }
+    grid1D.pop_back();
+
+    while (!checkValid()) {
+        std::uniform_int_distribution<std::mt19937::result_type> randCoord(0, numCells - 3 - placed);
+        int index = randCoord(rng);
+
+        int coord = grid1D[index];
+        int x = coord % dims.first;
+        int y = coord / dims.first;
+
         grid[y][x] = true;
 
         placed++;
@@ -47,10 +61,9 @@ HexGrid::HexGrid(std::pair<int, int> big, std::pair<int, int> s, std::pair<int, 
 // Literally just a bfs, based on discussion/lecture slides
 bool HexGrid::checkValid() {
     std::queue<std::pair<int, int>> q;
-    std::vector<std::vector<bool>> visited(size.second, std::vector<bool>(size.first, false));
+    std::vector visited(dims.second, std::vector(dims.first, false));
     q.push(start);
     visited[start.second][start.first] = true;
-
     while (!q.empty()) {
         std::pair<int, int> current = q.front();
         q.pop();
@@ -86,7 +99,7 @@ std::vector<std::pair<int, int>> HexGrid::getNeighbors(const std::pair<int, int>
     for (std::pair<int, int> offset : NEIGHBOR_OFFSETS) {
         int x = cell.first + offset.first;
         int y = cell.second + offset.second;
-        if (!(x < 0 || x >= size.first || y < 0 || y >= size.second)) {
+        if (!(x < 0 || x >= dims.first || y < 0 || y >= dims.second)) {
             neighbors.emplace_back(x, y);
         }
     }

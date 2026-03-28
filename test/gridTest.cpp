@@ -9,14 +9,6 @@
 
 TEST_CASE("Init Just Size", "[hexgrid]") {
 	HexGrid test({10, 10});
-	int num1s = 0;
-	int num0s = 0;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			if ((test.grid)[i][j] == 1) num1s++;
-			else num0s++;
-		}
-	}
 	REQUIRE(test.getStart() == std::pair<int, int>{0,9});
 	REQUIRE(test.getEnd() == std::pair<int, int>{9,0});
 }
@@ -85,7 +77,7 @@ TEST_CASE("Bottom Right, Even Height", "[neighbors]") {
 }
 
 TEST_CASE("Middle, Odd Coord", "[neighbors]") {
-	HexGrid test({100, 100});
+	HexGrid test({10, 10});
 	std::vector<std::pair<int, int>> neighbors = test.getNeighbors({5, 5});
 	std::vector<std::pair<int, int>> coords = {{5,4}, {6,4}, {4,5}, {6,5}, {5,6}, {6,6}};
 	for (int i = 0; i < coords.size(); i++) {

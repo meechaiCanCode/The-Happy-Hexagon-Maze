@@ -15,7 +15,7 @@ int main() {
      3. Send info to gridTest.hpp for init
      4.
      */
-    std::pair<int, int> size = {40,25};
+    std::pair<int, int> size = {400,250};
     const std::clock_t start_time = clock();
     HexGrid bigOh{size};
     const std::clock_t end_time = clock();
@@ -26,4 +26,6 @@ int main() {
           std::cout << bigOh.getCell(std::pair<int, int>(j, i)) << " ";
         }
     }
+    std::cout << std::endl;
+    std::cout << end_time - start_time;
 }
