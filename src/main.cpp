@@ -64,7 +64,7 @@ int main() {
     RenderWindow window(VideoMode({800, 600}), "Hex Maze");
 
     Font font;
-    font.openFromFile("../resources/Helvetica.ttc");
+    font.openFromFile("../resources/Helvetica.ttf");
 
     Screen currentScreen = MENU;
 
