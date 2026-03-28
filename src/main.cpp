@@ -10,19 +10,21 @@ using namespace std;
 
 const float PI = 3.14159265f;
 
-enum CellState { UNSEEN, WALL, START, END, TRAVERSED, CANDIDATE, PATH };
+enum CellState { UNSEEN, WALL, START, END, TRAVERSED, CANDIDATE, PATH, TRAVERSED2, PATH2 };
 
 enum Screen { MENU, MAZE };
 
 Color getColor(CellState state) {
     switch(state) {
-        case START:     return Color(34, 197, 94);
-        case END:       return Color(239, 68, 68);
-        case TRAVERSED: return Color(30, 64, 175);
-        case CANDIDATE: return Color(147, 197, 253);
-        case PATH:      return Color(250, 204, 21);
-        case WALL:      return Color(50, 50, 50);
-        default:        return Color::White;
+        case START:      return Color(34, 197, 94);
+        case END:        return Color(239, 68, 68);
+        case TRAVERSED:  return Color(30, 64, 175);
+        case CANDIDATE:  return Color(147, 197, 253);
+        case PATH:       return Color(250, 204, 21);
+        case WALL:       return Color(50, 50, 50);
+        case TRAVERSED2: return Color(128, 0, 128);
+        case PATH2:      return Color(200, 0, 255);
+        default:         return Color::White;
     }
 }
 
@@ -132,9 +134,9 @@ int main() {
             }
             traversedCount = 0; candidateCount = 0; pathLength = 0;
             for (auto& cell : frames[currentFrame]) {
-                if (cell == TRAVERSED) traversedCount++;
-                if (cell == CANDIDATE) candidateCount++;
-                if (cell == PATH)      pathLength++;
+                if (cell == TRAVERSED || cell == TRAVERSED2) traversedCount++;
+                if (cell == CANDIDATE)                        candidateCount++;
+                if (cell == PATH || cell == PATH2)            pathLength++;
             }
         }
 
@@ -166,7 +168,7 @@ int main() {
                         Vec2d startPos = {0, 0};
                         Vec2d endPos   = {cols - 1, rows - 1};
 
-                        auto buildFrames = [&](Algorithm& algo) {
+                        auto buildFrames = [&](Algorithm& algo, int algoIndex) {
                             while (!algo.getFoundPath().has_value()) {
                                 algo.nextIteration();
 
@@ -180,11 +182,11 @@ int main() {
                                             frame[r * cols + c] = WALL;
 
                                 for (auto& node : algo.getSearchedNodes())
-                                    frame[node.second * cols + node.first] = TRAVERSED;
+                                    frame[node.second * cols + node.first] = algoIndex == 0 ? TRAVERSED : TRAVERSED2;
 
                                 if (algo.getFoundPath().has_value())
                                     for (auto& node : algo.getFoundPath().value())
-                                        frame[node.second * cols + node.first] = PATH;
+                                        frame[node.second * cols + node.first] = algoIndex == 0 ? PATH : PATH2;
 
                                 frames.push_back(frame);
                             }
@@ -193,15 +195,15 @@ int main() {
 
                         if (selectedAlgo == 1) {
                             AStar algo(startPos, endPos, &grid);
-                            buildFrames(algo);
+                            buildFrames(algo, 0);
                         } else if (selectedAlgo == 2) {
                             Dijkstras algo(startPos, endPos, &grid);
-                            buildFrames(algo);
+                            buildFrames(algo, 0);
                         } else {
                             AStar algoA(startPos, endPos, &grid);
-                            buildFrames(algoA);
+                            buildFrames(algoA, 0);
                             Dijkstras algoD(startPos, endPos, &grid);
-                            buildFrames(algoD);
+                            buildFrames(algoD, 1);
                         }
 
                         gridView = window.getDefaultView();
@@ -240,7 +242,7 @@ int main() {
                 if (isDraggingSpeedSlider) {
                     speedSliderX = max(speedSliderMin, min(speedSliderMax, (float)mouseMove->position.x));
                     float t = (speedSliderX - speedSliderMin) / (speedSliderMax - speedSliderMin);
-                    animSpeed = 0.1f + t * 1.9f;
+                    animSpeed = 2.0f - t * 1.9f;
                 }
                 if (isDraggingSlider) {
                     sliderX = max(sliderMin, min(sliderMax, (float)mouseMove->position.x));
