@@ -182,8 +182,8 @@ int main() {
                         algo1Traversed = 0;     algo2Traversed = 0;
 
                         HexGrid grid({cols, rows});
-                        Vec2d startPos = {0, 0};
-                        Vec2d endPos   = {cols - 1, rows - 1};
+                        Vec2d startPos = grid.getStart();
+                        Vec2d endPos   = grid.getEnd();
 
                         auto buildFrames = [&](Algorithm& algo, int algoIndex) {
                             while (!algo.getFoundPath().has_value()) {
@@ -199,8 +199,8 @@ int main() {
                                 for (auto& node : algo.getSearchedNodes())
                                     frame[node.second * cols + node.first] = algoIndex == 0 ? TRAVERSED : TRAVERSED2;
 
-                                frame[0] = START;
-                                frame[rows * cols - 1] = END;
+                                frame[startPos.second * grid.getSize().first + startPos.first] = START;
+                                frame[endPos.second * grid.getSize().first + endPos.first] = END;
                                 frames.push_back(frame);
                             }
 
@@ -215,8 +215,8 @@ int main() {
                                 for (auto& node : algo.getFoundPath().value())
                                     pathFrame[node.second * cols + node.first] = algoIndex == 0 ? PATH : PATH2;
 
-                                pathFrame[0] = START;
-                                pathFrame[rows * cols - 1] = END;
+                                pathFrame[startPos.second * grid.getSize().first + startPos.first] = START;
+                                pathFrame[endPos.second * grid.getSize().first + endPos.first] = END;
                                 frames.push_back(pathFrame);
                             }
 
@@ -248,7 +248,7 @@ int main() {
 
                         gridView = window.getDefaultView();
                         gridView.setViewport(FloatRect({0.f, 0.f}, {1.f, 0.80f}));
-                        zoomLevel = 1.f;
+                        zoomLevel = 2.f;
                         currentScreen = MAZE;
                     }
                 }
@@ -282,7 +282,7 @@ int main() {
                 if (isDraggingSpeedSlider) {
                     speedSliderX = max(speedSliderMin, min(speedSliderMax, (float)mouseMove->position.x));
                     float t = (speedSliderX - speedSliderMin) / (speedSliderMax - speedSliderMin);
-                    animSpeed = 2.0f - t * 1.9f;
+                    animSpeed = 2.0f - t * 2.f;
                 }
                 if (isDraggingSlider) {
                     sliderX = max(sliderMin, min(sliderMax, (float)mouseMove->position.x));
