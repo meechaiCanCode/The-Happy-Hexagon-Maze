@@ -5,6 +5,7 @@
 #include "../src/HexGrid.hpp"
 #include "../src/Algorithms/Algorithm.hpp"
 #include "../src/Algorithms/Dijkstras.hpp"
+#include "../src/Algorithms/AStar.hpp"
 
 TEST_CASE("Init Just Size", "[hexgrid]") {
 	HexGrid test({10, 10});
@@ -108,10 +109,13 @@ TEST_CASE("Finds path", "[Algorithms]")
 	Vec2d size{10, 10};
 	HexGrid testGrid(size);
 	std::vector<std::unique_ptr<Algorithm>> algorithms;
-	algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, 0}, &testGrid));
+	algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
+	algorithms.emplace_back(std::make_unique<AStar>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
+
+	std::vector<std::vector<Vec2d>> foundPaths;
 	for (std::unique_ptr<Algorithm>& algo : algorithms)
 	{
-		auto john = algo->runAlgorithm();
+		foundPaths.emplace_back(algo->runAlgorithm());
 
 	}
 }

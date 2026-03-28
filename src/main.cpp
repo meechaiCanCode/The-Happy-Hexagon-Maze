@@ -26,21 +26,4 @@ int main() {
           std::cout << bigOh.getCell(std::pair<int, int>(j, i)) << " ";
         }
     }
-
-    std::cout << "\n" << end_time - start_time;
-
-    // Vec2d size{10, 10};
-    /*
-    HexGrid testGrid(size, 0);
-    std::vector<std::unique_ptr<Algorithm>> algorithms;
-    algorithms.emplace_back(std::make_unique<Dijkstras>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
-    algorithms.emplace_back(std::make_unique<AStar>(Vec2d{0, 0}, Vec2d{size.first - 1, size.second -1}, &testGrid));
-
-    std::vector<std::vector<Vec2d>> foundPaths;
-    for (std::unique_ptr<Algorithm>& algo : algorithms)
-    {
-        foundPaths.emplace_back(algo->runAlgorithm());
-
-    }*/
-
 }
