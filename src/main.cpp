@@ -166,8 +166,8 @@ int main() {
                                 algo.nextIteration();
 
                                 vector<CellState> frame(rows * cols, UNSEEN);
-                                frame[0] = START;
-                                frame[rows * cols - 1] = END;
+                                frame[startPos.second * grid.getSize().first + startPos.first] = START;
+                                frame[endPos.second * grid.getSize().first + endPos.first] = END;
 
                                 for (int r = 0; r < rows; r++)
                                     for (int c = 0; c < cols; c++)

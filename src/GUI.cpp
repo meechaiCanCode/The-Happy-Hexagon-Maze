@@ -64,18 +64,21 @@ int main() {
     RenderWindow window(VideoMode({800, 600}), "Hex Maze");
 
     Font font;
-    font.openFromFile("/System/Library/Fonts/Helvetica.ttc");
+    font.openFromFile("../resources/Helvetica.ttf");
 
     Screen currentScreen = MENU;
 
-    int gridSize = 10;
+    int gridSizeX = 10;
+    int gridSizeY = 10;
     int selectedAlgo = 0;
 
-    RectangleShape sizeDownBtn  = makeButton(280.f, 220.f, 40.f,  40.f);
-    RectangleShape sizeUpBtn    = makeButton(480.f, 220.f, 40.f,  40.f);
-    RectangleShape algoABtn     = makeButton(200.f, 310.f, 120.f, 40.f);
-    RectangleShape algoDBtn     = makeButton(340.f, 310.f, 120.f, 40.f);
-    RectangleShape algoBothBtn  = makeButton(480.f, 310.f, 120.f, 40.f);
+    RectangleShape sizeXDownBtn = makeButton(280.f, 200.f, 40.f, 40.f);
+    RectangleShape sizeXUpBtn   = makeButton(480.f, 200.f, 40.f, 40.f);
+    RectangleShape sizeYDownBtn = makeButton(280.f, 260.f, 40.f, 40.f);
+    RectangleShape sizeYUpBtn   = makeButton(480.f, 260.f, 40.f, 40.f);
+    RectangleShape algoABtn     = makeButton(200.f, 330.f, 120.f, 40.f);
+    RectangleShape algoDBtn     = makeButton(340.f, 330.f, 120.f, 40.f);
+    RectangleShape algoBothBtn  = makeButton(480.f, 330.f, 120.f, 40.f);
     RectangleShape startBtn     = makeButton(300.f, 420.f, 200.f, 50.f);
 
     float size = 30.f;
@@ -143,15 +146,17 @@ int main() {
                 Vector2f mousePos = {(float)mouseDown->position.x, (float)mouseDown->position.y};
 
                 if (currentScreen == MENU) {
-                    if (isClicked(sizeDownBtn, mousePos) && gridSize > 5)  gridSize--;
-                    if (isClicked(sizeUpBtn,   mousePos) && gridSize < 30) gridSize++;
-                    if (isClicked(algoABtn,    mousePos)) selectedAlgo = 1;
-                    if (isClicked(algoDBtn,    mousePos)) selectedAlgo = 2;
-                    if (isClicked(algoBothBtn, mousePos)) selectedAlgo = 0;
+                    if (isClicked(sizeXDownBtn, mousePos) && gridSizeX > 5)    gridSizeX--;
+                    if (isClicked(sizeXUpBtn,   mousePos) && gridSizeX < 1000) gridSizeX++;
+                    if (isClicked(sizeYDownBtn, mousePos) && gridSizeY > 5)    gridSizeY--;
+                    if (isClicked(sizeYUpBtn,   mousePos) && gridSizeY < 1000) gridSizeY++;
+                    if (isClicked(algoABtn,     mousePos)) selectedAlgo = 1;
+                    if (isClicked(algoDBtn,     mousePos)) selectedAlgo = 2;
+                    if (isClicked(algoBothBtn,  mousePos)) selectedAlgo = 0;
 
                     if (isClicked(startBtn, mousePos)) {
-                        rows = gridSize;
-                        cols = gridSize;
+                        rows = gridSizeY;
+                        cols = gridSizeX;
                         w = size * sqrt(3.f);
                         frames.clear();
                         currentFrame = 0;
@@ -166,8 +171,8 @@ int main() {
                                 algo.nextIteration();
 
                                 vector<CellState> frame(rows * cols, UNSEEN);
-                                frame[0] = START;
-                                frame[rows * cols - 1] = END;
+                                frame[startPos.second * grid.getSize().first + startPos.first] = START;
+                                frame[endPos.second * grid.getSize().first + endPos.first] = END;
 
                                 for (int r = 0; r < rows; r++)
                                     for (int c = 0; c < cols; c++)
@@ -275,31 +280,54 @@ int main() {
             title.setFillColor(Color::White);
             window.draw(title);
 
-            Text sizeLabel(font, "Grid Size:", 18);
-            sizeLabel.setPosition({200.f, 228.f});
-            sizeLabel.setFillColor(Color::White);
-            window.draw(sizeLabel);
+            Text xLabel(font, "Grid X:", 18);
+            xLabel.setPosition({200.f, 208.f});
+            xLabel.setFillColor(Color::White);
+            window.draw(xLabel);
 
-            window.draw(sizeDownBtn);
-            Text downText(font, "-", 20);
-            downText.setFillColor(Color::White);
-            centerText(downText, sizeDownBtn);
-            window.draw(downText);
+            window.draw(sizeXDownBtn);
+            Text xDownText(font, "-", 20);
+            xDownText.setFillColor(Color::White);
+            centerText(xDownText, sizeXDownBtn);
+            window.draw(xDownText);
 
-            Text sizeNum(font, to_string(gridSize), 22);
-            FloatRect snb = sizeNum.getLocalBounds();
-            sizeNum.setPosition({400.f - snb.size.x / 2.f, 228.f});
-            sizeNum.setFillColor(Color(250, 204, 21));
-            window.draw(sizeNum);
+            Text xNum(font, to_string(gridSizeX), 22);
+            FloatRect xnb = xNum.getLocalBounds();
+            xNum.setPosition({400.f - xnb.size.x / 2.f, 208.f});
+            xNum.setFillColor(Color(250, 204, 21));
+            window.draw(xNum);
 
-            window.draw(sizeUpBtn);
-            Text upText(font, "+", 20);
-            upText.setFillColor(Color::White);
-            centerText(upText, sizeUpBtn);
-            window.draw(upText);
+            window.draw(sizeXUpBtn);
+            Text xUpText(font, "+", 20);
+            xUpText.setFillColor(Color::White);
+            centerText(xUpText, sizeXUpBtn);
+            window.draw(xUpText);
+
+            Text yLabel(font, "Grid Y:", 18);
+            yLabel.setPosition({200.f, 268.f});
+            yLabel.setFillColor(Color::White);
+            window.draw(yLabel);
+
+            window.draw(sizeYDownBtn);
+            Text yDownText(font, "-", 20);
+            yDownText.setFillColor(Color::White);
+            centerText(yDownText, sizeYDownBtn);
+            window.draw(yDownText);
+
+            Text yNum(font, to_string(gridSizeY), 22);
+            FloatRect ynb = yNum.getLocalBounds();
+            yNum.setPosition({400.f - ynb.size.x / 2.f, 268.f});
+            yNum.setFillColor(Color(250, 204, 21));
+            window.draw(yNum);
+
+            window.draw(sizeYUpBtn);
+            Text yUpText(font, "+", 20);
+            yUpText.setFillColor(Color::White);
+            centerText(yUpText, sizeYUpBtn);
+            window.draw(yUpText);
 
             Text algoLabel(font, "Algorithm:", 18);
-            algoLabel.setPosition({200.f, 318.f});
+            algoLabel.setPosition({200.f, 338.f});
             algoLabel.setFillColor(Color::White);
             window.draw(algoLabel);
 
