@@ -12,9 +12,9 @@ ___
 4. Enter and press play, zoom and speed up as desired.
 ### VSCode / Terminal
 1. Clone repo.
-2. In terminal, run the following commands: 
-  `cd src`
-  `clang++ -std=c++20 main.cpp HexGrid.cpp Algorithms/Algorithm.cpp Algorithms/AStar.cpp Algorithms/Dijkstras.cpp -o main $(pkg-config --cflags --libs sfml-graphics sfml-window sfml-system)`
-  `./main`
+2. In terminal, run the following commands:
+    - `cd src`
+    - `clang++ -std=c++20 main.cpp HexGrid.cpp Algorithms/Algorithm.cpp Algorithms/AStar.cpp Algorithms/Dijkstras.cpp -o main $(pkg-config --cflags --libs sfml-graphics sfml-window sfml-system)`
+    - `./main`
 3. Select the height and width, as well as the desired searching algorithm on the input screen.
 4. Enter and press play, zoom and speed up as desired.
